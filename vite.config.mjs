@@ -15,7 +15,6 @@ export default defineConfig({
     Vue({
       template: { transformAssetUrls },
     }),
-    // Configuración completa de la PWA para el profesor
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'inline',
@@ -26,54 +25,48 @@ export default defineConfig({
         description: 'Aplicación PWA para la gestión de inventario y productos',
         theme_color: '#1976D2',
         background_color: '#ffffff',
-        display: 'standalone', // Requisito: Ejecutarse como app independiente
+        display: 'standalone',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: 'pwa-192x192.jpeg',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-512x512.jpeg',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'any'
           }
         ]
       },
       workbox: {
-        // Precachear todos los recursos estáticos generados por Vite
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpeg,jpg,woff2,woff}'],
-
-        // Estrategia CacheFirst para recursos estáticos (JS, CSS, fuentes, imágenes)
         runtimeCaching: [
           {
-            // JS y CSS: CacheFirst — se sirven desde caché, ideal para offline
             urlPattern: /\.(?:js|css)$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'static-resources',
               expiration: {
                 maxEntries: 60,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 días
+                maxAgeSeconds: 30 * 24 * 60 * 60,
               },
             },
           },
           {
-            // Fuentes e imágenes: CacheFirst
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico|woff|woff2|ttf|eot)$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'assets-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 24 * 60 * 60, // 60 días
+                maxAgeSeconds: 60 * 24 * 60 * 60,
               },
             },
           },
           {
-            // Navegación SPA (rutas de la app): NetworkFirst con fallback a caché
             urlPattern: ({ request }) => request.mode === 'navigate',
             handler: 'NetworkFirst',
             options: {
@@ -84,8 +77,7 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: true,
-        type: 'module'// Permite probar la PWA mientras desarrollas
+        enabled: false  // ← CAMBIO CLAVE: evita conflictos de caché en desarrollo
       }
     }),
     Vuetify({
